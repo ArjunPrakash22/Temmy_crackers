@@ -1,0 +1,45 @@
+.comp_table{
+    margin-top: 100px;
+}
+.product-input{
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 20px;
+    outline: none;
+    /* border: none; */
+}
+.form-section{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin-top: 10px;
+}
+.form-sec-cont{
+    /* margin-top: 100px; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.product-submit{
+    margin-top: 20px;
+    background: #5400bc;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    font-size: 18px;
+    outline: none;
+    border: none;
+}
+.product-submit:hover{
+    background: #ffb600;
+}
+@media(max-width:680px){
+    .comp-table-sec{
+        overflow-x: scroll;
+    }
+    .form-section{
+        width: 90%;
+    }
+}

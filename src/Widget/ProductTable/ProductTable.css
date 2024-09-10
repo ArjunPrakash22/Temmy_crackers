@@ -1,0 +1,38 @@
+.comp_table{
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    overflow-x: scroll;
+ }
+ 
+ .comp_td{
+     border:1px #dddddd solid;
+     text-align: left;
+     padding: 20px;
+     line-height: 1.5rem;
+     /* color: white; */
+     white-space: pre-line;
+ }
+ 
+ .comp_th{
+     border: 1px solid #dddddd;
+     color: #fff;
+     padding: 20px;
+     text-align: center;
+ }
+ 
+ .comp_tr:nth-child(even){
+     background-color:#ffce50;
+     font-weight: 600;
+ }
+ 
+ .comp_tr:nth-child(odd) {
+     background-color:#9901d5;
+     color: white;
+     font-weight: 600;
+ }
+ 
+ .comp_td:nth-child(1){
+     text-align: center;
+ }
+ 

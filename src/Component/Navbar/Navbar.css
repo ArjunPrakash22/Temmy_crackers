@@ -1,0 +1,243 @@
+/* General Reset */
+/* body, html {
+  margin: 0;
+  font: bold 14px/1.4 'Open Sans', Arial, sans-serif;
+  scroll-behavior: smooth;
+} */
+
+/* Logo Styling */
+.logo-img {
+  width: 300px;
+}
+
+/* Hero Section */
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 80vh;
+  background-image: url('../../Assets/Pictures/hero-image.png'); /* Hero image path */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+}
+
+/* Navbar Styles */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: rgba( 0, 0, 0, 0.2 );
+box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+backdrop-filter: blur( 8.5px );
+-webkit-backdrop-filter: blur( 8.5px );
+border-radius: 10px;
+border: 1px solid rgba( 255, 255, 255, 0.18 );
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Portfolio Navigation */
+.portfolio-nav {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+}
+
+.nav-li {
+  text-align: center;
+  padding: 0 15px;
+  cursor: pointer;
+}
+
+.nav-a {
+  color: #fff;
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: 0.15em;
+  position: relative;
+}
+
+/* Hover Effect */
+.nav-a:after {
+  content: "";
+  display: block;
+  height: 2px;
+  width: 0;
+  background: #fff;
+  transition: width 0.3s ease, left 0.3s ease;
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+}
+
+.nav-a:hover:after {
+  width: 100%;
+  left: 0;
+}
+
+/* Mobile Menu Button */
+.nav-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 36px;
+  cursor: pointer;
+}
+
+/* Mobile Menu */
+.nav-mob {
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 110vh;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  text-align: center;
+  padding-top: 60px;
+
+}
+.nav-mob.open {
+  display: flex;
+}
+
+.nav-mob ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-li {
+  padding: 20px;
+}
+
+.nav-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 36px;
+  cursor: pointer;
+  z-index: 1100;
+}
+
+/* Explore Products Button */
+.explore-products {
+  background-color: #5400bc;
+  padding: 15px;
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  border-radius: 10px;
+  position: absolute;
+  top: 80%;
+  right: 17%;
+}
+
+.explore-products:hover {
+  background-color: #db0303;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-section {
+    height: 50vh; /* Adjust the height for tablets */
+    background-size: contain; /* Ensure the image scales down proportionally */
+  }
+  .portfolio-nav {
+    display: none;
+  }
+
+  .nav-btn {
+    color: #2a005e;
+    display: block;
+  }
+  .logo-img {
+    width: 200px;
+  }
+  .navbar{
+    /* width: 95%; */
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-mob {
+    display: none;
+    flex-direction: column;
+  }
+
+  .nav-mob.open {
+    display: flex;
+  }
+
+  .nav-li {
+    padding: 20px;
+  }
+}
+@media (max-width:700px){
+  .navbar{
+    /* width: 94%; */
+  }
+  .hero-section{
+    height: 45vh;
+  }
+}
+@media(max-width:555px){
+  .navbar{
+    /* width: 100%; */
+    /* padding: 8px; */
+  }
+  .hero-section{
+    height: 47vh;
+  }
+}
+@media (max-width: 475px) {
+  .navbar {
+    /* width: 100%; */
+  }
+  
+  .hero-section {
+    /* position:static; */
+    height: 35vh; /* Adjust the height for mobile devices */
+    background-size: contain;
+    background-position: center;
+    flex-direction: column; /* Stack content vertically if needed */
+  }
+
+  .nav-btn {
+    color: #2a005e;
+  }
+
+  .explore-products {
+    display: none;
+  }
+}
+
+@media (max-width: 388px) {
+  .hero-section {
+    height: 38vh;
+  }
+}
+
+@media (max-width: 335px) {
+  .hero-section {
+    height: 30vh;
+  }
+}

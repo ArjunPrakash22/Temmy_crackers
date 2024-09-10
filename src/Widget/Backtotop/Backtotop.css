@@ -1,0 +1,38 @@
+.back {
+    position: fixed;
+    bottom: 150px;
+    right: 25px;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    line-height: 3rem;
+    color: #fff;
+    background-color: #ffb600;
+    /* display: none; */
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    font-weight: bolder;
+    cursor: pointer;
+    /* box-shadow: 2px 2px 5px 2px #fff; */
+    animation: fade_in_button .5s ease;
+    z-index: 10;
+  }
+  
+  .back:hover {
+    transform: scale(1.1);
+    color: #fff;
+    background-color: #c40202;
+    transition: 0.6s;
+  }
+  
+  @keyframes fade_in_button {
+    0% {
+      transform: scale(0);
+    }
+  
+    100% {
+      transform: scale(1);
+    }
+  }
+  

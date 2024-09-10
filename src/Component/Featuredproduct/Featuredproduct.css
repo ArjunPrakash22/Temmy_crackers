@@ -1,0 +1,14 @@
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    padding: 30px;
+  }
+  .featured-prod-sec{
+   background:#5400bc ;
+}
+.featured-prod-h1{
+    color: white;
+    padding: 30px;
+}

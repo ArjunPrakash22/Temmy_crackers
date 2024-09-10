@@ -1,0 +1,6 @@
+export {default as Navbar} from './Navbar/Navbar'
+export {default as Footer} from './Footer/Footer'
+export {default as About} from './About/About'
+export {default as FeaturedProduct} from './Featuredproduct/Featuredproduct'
+export {default as Safety} from './Safety/Safety'
+export {default as Contact} from './Contact/Contact'
