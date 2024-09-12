@@ -1,5 +1,7 @@
 // src/components/AdminLogin.jsx
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
+import { collection, addDoc, getDocs,query,where } from "firebase/firestore";
+import { db } from '../../firebase';
 import './Login.css';
 import adminlogo from '../../Assets/Pictures/logo1.png'
 
@@ -7,9 +9,15 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle login logic here
+    console.log(username,password)
+    const usersCollectionRef = collection(db, 'login'); // Replace 'users' with your Firestore collection name
+      const q = query(usersCollectionRef, where('user', '==', 'admin')); // Query active users
+      const querySnapshot = await getDocs(q);
+      const usersData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      console.log(usersData)
   };
 
   return (
