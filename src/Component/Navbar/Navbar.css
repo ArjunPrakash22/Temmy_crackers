@@ -32,10 +32,10 @@
   display: flex;
   justify-content: space-between;
   padding: 10px 20px;
-  background: rgba( 0, 0, 0, 0.2 );
+  background: rgba( 0, 0, 0, 0.6 );
 box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-backdrop-filter: blur( 8.5px );
--webkit-backdrop-filter: blur( 8.5px );
+backdrop-filter: blur( 20px );
+-webkit-backdrop-filter: blur( 20px );
 border-radius: 10px;
 border: 1px solid rgba( 255, 255, 255, 0.18 );
 }
@@ -62,24 +62,29 @@ border: 1px solid rgba( 255, 255, 255, 0.18 );
 }
 
 .nav-a {
+  font-weight: 650;
   color: #fff;
+  /* -webkit-text-stroke: 2px #ff2b2b;  */
+    /* color: white; */
   text-transform: uppercase;
   text-decoration: none;
   letter-spacing: 0.15em;
+  padding: 10px 20px;
   position: relative;
 }
 
 /* Hover Effect */
 .nav-a:after {
-  content: "";
-  display: block;
-  height: 2px;
-  width: 0;
-  background: #fff;
-  transition: width 0.3s ease, left 0.3s ease;
-  position: absolute;
-  left: 50%;
-  bottom: 0;
+  background: none repeat scroll 0 0 transparent;
+    bottom: 0;
+    content: "";
+    display: block;
+    height: 3px;
+    left: 50%;
+    position: absolute;
+    background: #fff;
+    transition: width 0.3s ease 0s, left 0.3s ease 0s;
+    width: 0;
 }
 
 .nav-a:hover:after {
@@ -166,7 +171,7 @@ border: 1px solid rgba( 255, 255, 255, 0.18 );
   }
 
   .nav-btn {
-    color: #2a005e;
+    color: #fff;
     display: block;
   }
   .logo-img {
@@ -222,7 +227,7 @@ border: 1px solid rgba( 255, 255, 255, 0.18 );
   }
 
   .nav-btn {
-    color: #2a005e;
+    color: #fff;
   }
 
   .explore-products {

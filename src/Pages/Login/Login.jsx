@@ -1,4 +1,3 @@
-// src/components/AdminLogin.jsx
 import React, { useState } from 'react';
 import './Login.css';
 import adminlogo from '../../Assets/Pictures/logo1.png'
