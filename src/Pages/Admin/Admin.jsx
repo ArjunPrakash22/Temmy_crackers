@@ -24,6 +24,8 @@ const Admin = () => {
         // { id: 5, name: "4 inch Delux Lakshmi crackers", actualRate: 132, discountRate: 33, quantity: 0 },
       ]);
 
+    const [orders, setOrders]=useState([])
+
     const navigate = useNavigate();
 
     const productsCollectionRef=collection(db,'products');
@@ -43,11 +45,11 @@ const Admin = () => {
         { field: 'id', header: 'Order ID' },
         { field: 'date', header: 'Date' },
         { field: 'name', header: 'Customer Name' },
-        { field: 'phoneno', header: 'Phone no.' },
+        { field: 'phoneNumber', header: 'Phone no.' },
         { field: 'email', header: 'Email id' },
         { field: 'city', header: 'City' },
         { field: 'state', header: 'State' },
-        { field: 'product', header: 'Products' },
+        // { field: 'product', header: 'Products' },
         
         {
             field: 'bill',
@@ -62,7 +64,6 @@ const Admin = () => {
     ];
 
     const fetchProducts = async () => {
-        console.log("Use effect");
         try {
           const querySnapshot = await getDocs(productsCollectionRef);
       
@@ -82,8 +83,31 @@ const Admin = () => {
         }
       };
 
+      const fetchOrders = async () => {
+
+        try {
+          const querySnapshot = await getDocs(ordersCollectionRef);
+      
+          const jsonOrderObjects = [];
+  
+          querySnapshot.forEach((doc) => {
+            if (doc.id != 0) {
+              var orderdata=doc.data()
+              jsonOrderObjects.push(orderdata); 
+            }
+          });
+    
+        //   setProducts(jsonObjects);
+        console.log(jsonOrderObjects)
+        setOrders(jsonOrderObjects)
+        } catch (error) {
+          console.error("Error fetching documents: ", error);
+        }
+      };
+
     useEffect(() => {
         fetchProducts();
+        fetchOrders();
       }, []);
     
 
@@ -229,7 +253,7 @@ const Admin = () => {
                             + Add Order
                         </button>
                         <div className="product_table">
-                            <ProductTable columns={orderColumns} data={product_list} onEdit={handleEditOrder} />
+                            <ProductTable columns={orderColumns} data={orders} onEdit={handleEditOrder} />
                         </div>
                     </div>
                 )}
