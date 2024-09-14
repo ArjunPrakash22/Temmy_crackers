@@ -1,5 +1,5 @@
 // Admin.jsx
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import adminlogo from '../../Assets/Pictures/logo2.png';
 import './Admin.css';
 import { ProductTable, EditModal, BillModal } from '../../Widget';
@@ -15,6 +15,14 @@ const Admin = () => {
     const [editData, setEditData] = useState(null);
     const [billData, setBillData] = useState(null);
     const [isProduct, setIsProduct] = useState(true);
+
+    const [products, setProducts] = useState([
+        // { id: 1, name: "2 3/4 inch Kuruvi", actualRate: 36, discountRate: 9, quantity: 0 },
+        // { id: 2, name: "3 1/2 inch Lakshmi crackers", actualRate: 60, discountRate: 15, quantity: 0 },
+        // { id: 3, name: "4 inch Lakshmi crackers", actualRate: 80, discountRate: 20, quantity: 0 },
+        // { id: 4, name: "4 inch Gold Lakshmi crackers", actualRate: 120, discountRate: 30, quantity: 0 },
+        // { id: 5, name: "4 inch Delux Lakshmi crackers", actualRate: 132, discountRate: 33, quantity: 0 },
+      ]);
 
     const navigate = useNavigate();
 
@@ -52,6 +60,31 @@ const Admin = () => {
         },
         { field: 'edit', header: 'Actions' }, // Ensure 'edit' column has a header
     ];
+
+    const fetchProducts = async () => {
+        console.log("Use effect");
+        try {
+          const querySnapshot = await getDocs(productsCollectionRef);
+      
+          const jsonObjects = [];
+  
+          querySnapshot.forEach((doc) => {
+            if (doc.id != 0) {
+              var productdata=doc.data()
+              productdata.quantity=0;
+              jsonObjects.push(productdata); 
+            }
+          });
+    
+          setProducts(jsonObjects);
+        } catch (error) {
+          console.error("Error fetching documents: ", error);
+        }
+      };
+
+    useEffect(() => {
+        fetchProducts();
+      }, []);
     
 
     const handleTabSwitch = (tab) => {
@@ -84,18 +117,19 @@ const Admin = () => {
     };
 
     const handleAddOrder = () => {
-        setIsProduct(false);
-        setEditData({
-            date: '',
-            name: '',
-            phoneno: '',
-            email: '',
-            city: '',
-            state: '',
-            product: '',
-            bill: '',
-        });
-        setShowModal(true);
+        navigate("/product")
+        // setIsProduct(false);
+        // setEditData({
+        //     date: '',
+        //     name: '',
+        //     phoneno: '',
+        //     email: '',
+        //     city: '',
+        //     state: '',
+        //     product: '',
+        //     bill: '',
+        // });
+        // setShowModal(true);
     };
 
     const handlePreviewBill = (rowData) => {
@@ -141,6 +175,7 @@ const Admin = () => {
             console.error(error);
         }
         setShowModal(false);
+        fetchProducts()
     };
     
 
@@ -182,7 +217,7 @@ const Admin = () => {
                             + Add Product
                         </button>
                         <div className="product_table">
-                            <ProductTable columns={productColumns} data={product_list} onEdit={handleEditProduct} />
+                            <ProductTable columns={productColumns} data={products} onEdit={handleEditProduct} />
                         </div>
                     </div>
                 )}
