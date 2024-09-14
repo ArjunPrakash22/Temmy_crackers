@@ -22,12 +22,12 @@
 }
 
 .comp_tr:nth-child(even) {
-    background-color: #fff6b1;
+    background-color: #ffd466;
     font-weight: 600;
 }
 
 .comp_tr:nth-child(odd) {
-    background-color: #ebbeff;
+    background-color: #be34fe;
     color: black;
     font-weight: 600;
 }
