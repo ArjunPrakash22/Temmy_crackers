@@ -12,35 +12,37 @@ const Product = () => {
     // { id: 4, name: "4 inch Gold Lakshmi crackers", actualRate: 120, discountRate: 30, quantity: 0 },
     // { id: 5, name: "4 inch Delux Lakshmi crackers", actualRate: 132, discountRate: 33, quantity: 0 },
   ]);
+  const [category, setCategory] = useState(''); 
 
   const productsCollectionRef=collection(db,'products');
 
   useEffect(() => {
-    // Define the async function inside useEffect
     const fetchProducts = async () => {
-      console.log("Use effect");
       try {
         const querySnapshot = await getDocs(productsCollectionRef);
-    
         const jsonObjects = [];
 
         querySnapshot.forEach((doc) => {
           if (doc.id != 0) {
-            var productdata=doc.data()
-            productdata.quantity=0;
-            jsonObjects.push(productdata); 
+            var productdata = doc.data();
+            productdata.quantity = 0;
+            jsonObjects.push(productdata);
           }
         });
-  
-        setProducts(jsonObjects);
+
+        // Filter products based on category
+        const filteredProducts = jsonObjects.filter((product) => 
+          product.category.toLowerCase().includes(category.toLowerCase())
+        );
+        
+        setProducts(filteredProducts);
       } catch (error) {
         console.error("Error fetching documents: ", error);
       }
     };
-  
-    fetchProducts();
 
-  }, []);
+    fetchProducts();
+  }, [category]);
   
 
   const [formDetails, setFormDetails] = useState({
@@ -175,12 +177,22 @@ const Product = () => {
     <div className='product-sec'>
       <Navbar />
       <p className='product-head'>PRODUCT</p>
+      <div className="search-container">
+        <input 
+          type="text" 
+          placeholder="Search by Category" 
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="search-input"
+        />
+      </div>
       <div className='comp-table-sec'>
       <table className='comp_table'>
         <thead className='comp_thead'>
           <tr className='comp_tr thead'>
             <th className='comp_th'>S.No</th>
             <th className='comp_th'>Name of the Product</th>
+            <th className='comp_th'>Category</th>
             <th className='comp_th'>Marked Price</th>
             <th className='comp_th'>Our Price</th>
             <th className='comp_th'>Quantity</th>
@@ -192,6 +204,7 @@ const Product = () => {
             <tr key={product.id} className='comp_tr'>
               <td className='comp_td'>{product.id}</td>
               <td className='comp_td'>{product.name}</td>
+              <td className='comp_td'>{product.category}</td>
               <td className='comp_td'><s>{product.actualRate}</s></td> {/* Strikethrough for actual rate */}
               <td className='comp_td'>{product.discountRate}</td> {/* Discount rate is current price */}
               <td className='comp_td'>

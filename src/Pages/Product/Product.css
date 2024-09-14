@@ -7,6 +7,19 @@
     font-size: 28px;
     font-weight: 600;
 }
+.search-input{
+    padding: 10px;
+    font-size: 18px;
+    /* border: none; */
+    outline: none;
+    border-radius: 10px;
+    width: 50%;
+    /* background: #5400bc; */
+}
+.search-container{
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
 .product-input{
     padding: 10px;
     border-radius: 10px;
