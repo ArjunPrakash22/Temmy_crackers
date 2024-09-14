@@ -65,8 +65,8 @@ const Admin = () => {
 
     const fetchProducts = async () => {
         try {
-          const querySnapshot = await getDocs(productsCollectionRef);
-      
+          const q = query(productsCollectionRef, orderBy('id'));
+          const querySnapshot = await getDocs(q);
           const jsonObjects = [];
   
           querySnapshot.forEach((doc) => {
@@ -84,9 +84,9 @@ const Admin = () => {
       };
 
       const fetchOrders = async () => {
-
         try {
-          const querySnapshot = await getDocs(ordersCollectionRef);
+        const q = query(ordersCollectionRef, orderBy('id'));
+        const querySnapshot = await getDocs(q);
       
           const jsonOrderObjects = [];
   
@@ -97,8 +97,6 @@ const Admin = () => {
             }
           });
     
-        //   setProducts(jsonObjects);
-        console.log(jsonOrderObjects)
         setOrders(jsonOrderObjects)
         } catch (error) {
           console.error("Error fetching documents: ", error);
