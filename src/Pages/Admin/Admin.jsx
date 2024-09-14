@@ -4,8 +4,8 @@ import adminlogo from '../../Assets/Pictures/logo2.png';
 import './Admin.css';
 import { ProductTable, EditModal, BillModal } from '../../Widget';
 import { product_list } from '../../Constants/Products'; // Replace with actual data for orders
-import { Link, useNavigate } from 'react-router-dom';
-import { collection,doc,setDoc,updateDoc, addDoc, getDocs,query,where,orderBy,limit } from "firebase/firestore";
+import { Link, useNavigate,useLocation } from 'react-router-dom';
+import { collection,doc,setDoc,updateDoc, addDoc, getDocs,query,where,orderBy,limit,deleteDoc } from "firebase/firestore";
 import { db } from '../../firebase';
 
 const Admin = () => {
@@ -15,7 +15,8 @@ const Admin = () => {
     const [editData, setEditData] = useState(null);
     const [billData, setBillData] = useState(null);
     const [isProduct, setIsProduct] = useState(true);
-
+const location=useLocation();
+    const { key } = location.state || {}; 
     const [products, setProducts] = useState([
         // { id: 1, name: "2 3/4 inch Kuruvi", actualRate: 36, discountRate: 9, quantity: 0 },
         // { id: 2, name: "3 1/2 inch Lakshmi crackers", actualRate: 60, discountRate: 15, quantity: 0 },
@@ -49,7 +50,7 @@ const Admin = () => {
         { field: 'email', header: 'Email id' },
         { field: 'city', header: 'City' },
         { field: 'state', header: 'State' },
-        // { field: 'product', header: 'Products' },
+        { field: 'status', header: 'Status' },
         
         {
             field: 'bill',
@@ -106,6 +107,11 @@ const Admin = () => {
       };
 
     useEffect(() => {
+        if (!location.state || !location.state.key) {
+            window.history.pushState(null, null, "/login");
+            window.history.replaceState(null, null, "/login");
+            navigate('/login');
+          }
         fetchProducts();
         fetchOrders();
       }, []);
@@ -135,7 +141,7 @@ const Admin = () => {
     };
 
     const handleEditOrder = (rowData) => {
-        setIsProduct(true);
+        setIsProduct(false);  
         setEditData(rowData);
         setShowModal(true);
     };
@@ -161,46 +167,91 @@ const Admin = () => {
         setShowBillModal(true);
     };
 
+    const handleDelete = async (rowData) => {
+        try {
+            if (isProduct) {
+                // Delete product
+                const docRef = doc(db, "products", rowData.id.toString());
+                await deleteDoc(docRef);
+            } else {
+                // Delete order
+                const docRef = doc(db, "orders", rowData.id.toString());
+                await deleteDoc(docRef);
+            }
+            // Fetch updated data
+            fetchProducts();
+            fetchOrders();
+        } catch (error) {
+            console.error("Error deleting document: ", error);
+        }
+    };
+    
     const handleSave = async (updatedData) => {
         console.log('Updated Data:', updatedData);
-        const { id, name, actualRate, discountRate, category, per } = updatedData;
     
-        try {
-            if (id) {
-                console.log("hi");
-                const docRef = doc(db, "products", id.toString());
-                await updateDoc(docRef, {
-                    id, 
-                    name,
-                    actualRate,
-                    discountRate,
-                    category,
-                    per,
-                });
-            } else {
-                console.log("bye");
-                const q = query(productsCollectionRef, orderBy("id", "desc"), limit(1));
-                const querySnapshot = await getDocs(q);
-                const firstDoc = querySnapshot.docs[0];
+        if (isProduct) {
+            const { id, name, actualRate, discountRate, category, per } = updatedData;
     
-                const lastID = firstDoc ? firstDoc.data().id : 0;
-                const newID = lastID + 1;
-    
-                await setDoc(doc(db, "products", newID.toString()), {
-                    id: newID,
-                    name,
-                    actualRate,
-                    discountRate,
-                    category,
-                    per,
-                });
+            try {
+                if (id) {
+                    const docRef = doc(db, "products", id.toString());
+                    await updateDoc(docRef, {
+                        id, 
+                        name,
+                        actualRate,
+                        discountRate,
+                        category,
+                        per,
+                    });
+                } else {
+                    const q = query(productsCollectionRef, orderBy("id", "desc"), limit(1));
+                    const querySnapshot = await getDocs(q);
+                    const firstDoc = querySnapshot.docs[0];
+        
+                    const lastID = firstDoc ? firstDoc.data().id : 0;
+                    const newID = lastID + 1;
+        
+                    await setDoc(doc(db, "products", newID.toString()), {
+                        id: newID,
+                        name,
+                        actualRate,
+                        discountRate,
+                        category,
+                        per,
+                    });
+                }
+            } catch (error) {
+                console.error(error);
             }
-        } catch (error) {
-            console.error(error);
+        } else {
+            const { id, date, name, phoneNumber, email, city, state, status,Products, totalAmountAfterDiscount } = updatedData;
+            try {
+                if (id) {
+                    const docRef = doc(db, "orders", id.toString());
+                    await updateDoc(docRef, {
+                        date,
+                        name,
+                        phoneNumber,
+                        email,
+                        city,
+                        state,
+                        status,
+                        Products,
+                        totalAmountAfterDiscount,
+                    });
+                } else {
+                    // Handle new order creation
+                }
+            } catch (error) {
+                console.error(error);
+            }
         }
+    
         setShowModal(false);
-        fetchProducts()
+        fetchProducts();
+        fetchOrders();
     };
+    
     
 
     const logout=()=>{
@@ -234,30 +285,41 @@ const Admin = () => {
             </div>
 
             <div className="tab-content">
-                {activeTab === 'product' && (
-                    <div className="product_list_tab">
-                        <p className="product_head">Product Management:</p>
-                        <button className="add-product-btn" onClick={handleAddProduct}>
-                            + Add Product
-                        </button>
-                        <div className="product_table">
-                            <ProductTable columns={productColumns} data={products} onEdit={handleEditProduct} />
-                        </div>
-                    </div>
-                )}
-
-                {activeTab === 'order' && (
-                    <div className="order_list_tab">
-                        <p className="product_head">Order Management:</p>
-                        <button className="add-product-btn" onClick={handleAddOrder}>
-                            + Add Order
-                        </button>
-                        <div className="product_table">
-                            <ProductTable columns={orderColumns} data={orders} onEdit={handleEditOrder} />
-                        </div>
-                    </div>
-                )}
+    {activeTab === 'product' && (
+        <div className="product_list_tab">
+            <p className="product_head">Product Management:</p>
+            <button className="add-product-btn" onClick={handleAddProduct}>
+                + Add Product
+            </button>
+            <div className="product_table">
+                <ProductTable
+                    columns={productColumns}
+                    data={products}
+                    onEdit={handleEditProduct}
+                    onDelete={handleDelete} // Pass onDelete function
+                />
             </div>
+        </div>
+    )}
+
+    {activeTab === 'order' && (
+        <div className="order_list_tab">
+            <p className="product_head">Order Management:</p>
+            <button className="add-product-btn" onClick={handleAddOrder}>
+                + Add Order
+            </button>
+            <div className="product_table">
+                <ProductTable
+                    columns={orderColumns}
+                    data={orders}
+                    onEdit={handleEditOrder}
+                    onDelete={handleDelete} // Pass onDelete function
+                />
+            </div>
+        </div>
+    )}
+</div>
+
 
             <EditModal
                 show={showModal}

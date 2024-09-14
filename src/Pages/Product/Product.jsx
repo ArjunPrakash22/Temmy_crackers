@@ -84,43 +84,50 @@ const Product = () => {
 
   const handleSubmit = async () => {
     const { name, city, state, address, phoneNumber, email } = formDetails;
+  
+    // Construct the order details for the email body
     const subject = `Order Details for ${name}`;
+    
+    let productDetails = products
+      .filter(product => product.quantity !== 0)
+      .map(product => 
+        `${product.name} - Quantity: ${product.quantity}, Total Price: ₹${calculateTotal(product)}`
+      ).join('\n');  // Join all product details with line breaks
+  
     const body = `
       Name: ${name}
       City: ${city}
       State: ${state}
       Address: ${address}
       Phone Number: ${phoneNumber}
+  
+      Ordered Products:
+      ${productDetails}
+  
       Total Discount Amount: ₹${totalDiscountAmount}
       Total Amount After Discount: ₹${totalAmountAfterDiscount}
     `;
-
-
-    //get me the products as a list inside here
-    // console.log(products)
+  
     const Products = products
-  .filter((product) => product.quantity != 0) // Only include products with non-zero quantity
-  .reduce((acc, product) => {
-    acc[product.id] = product;  // Use the product's 'id' as the key
-    return acc;
-  }, {});
-
-    console.log(Products)
-    const status="pending"
-    const date=new Date().toDateString();
-    const ordersCollectionRef=collection(db,'orders');
-    const q=query(ordersCollectionRef, orderBy("id","desc"), limit(1))
+      .filter((product) => product.quantity !== 0) // Only include products with non-zero quantity
+      .reduce((acc, product) => {
+        acc[product.id] = product;  // Use the product's 'id' as the key
+        return acc;
+      }, {});
+  
+    const status = "pending";
+    const date = new Date().toDateString();
+    const ordersCollectionRef = collection(db, 'orders');
+    const q = query(ordersCollectionRef, orderBy("id", "desc"), limit(1));
     const querySnapshot = await getDocs(q);
     const firstDoc = querySnapshot.docs[0];
-
-    const lastID=firstDoc.data().id
-    // console.log(lastID)
-
-
+  
+    const lastID = firstDoc.data().id;
+  
     try {
-      const id=(lastID+1);
-      const docRef = await setDoc(doc(db, "orders",id.toString()),{
-        id, 
+      const id = (lastID + 1);
+      await setDoc(doc(db, "orders", id.toString()), {
+        id,
         name,
         email,
         city,
@@ -132,28 +139,21 @@ const Product = () => {
         status,
         date,
         Products
-    });
-
-    //   const docRef = await addDoc(collection(db, "orders"),{
-    //     id, 
-    //     name,
-    //     email,
-    //     city,
-    //     state,
-    //     address,
-    //     phoneNumber,
-    //     totalDiscountAmount,
-    //     totalAmountAfterDiscount,
-    //     status,
-    //     date
-    // });
+      });
+  
+      
+      alert("Order placed successfully!");
+  
+      
+      const mailtoLink = `mailto:Rathan.industries.svks@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailtoLink;
+  
     } catch (e) {
       console.error("Error adding document: ", e);
+      alert("Failed to place the order. Please try again.");
     }
-    
-    // const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    // window.location.href = mailtoLink;
   };
+  
 
   return (
     <div className='product-sec'>

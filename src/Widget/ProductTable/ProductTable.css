@@ -17,17 +17,17 @@
 }
 
 .comp_th {
-    color: #fff;
+    color: #000;
     text-align: center;
 }
 
 .comp_tr:nth-child(even) {
-    background-color: #ffe57f;
+    background-color: #fff6b1;
     font-weight: 600;
 }
 
 .comp_tr:nth-child(odd) {
-    background-color: #cf4dff;
+    background-color: #ebbeff;
     color: black;
     font-weight: 600;
 }
@@ -35,12 +35,25 @@
 .edit-btn-admin {
     padding: 5px 10px;
     border: none;
-    background: #ff0000;
+    background: #275400;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.delete-btn-admin{
+    margin-left: 10px;
+    padding: 5px 10px;
+    border: none;
+    background: #ff3b3b;
     color: white;
     border-radius: 5px;
     cursor: pointer;
 }
 
 .edit-btn-admin:hover {
-    background: #ff6600;
+    background: #1eff00;
+    color: #000;
+}
+.delete-btn-admin:hover{
+    background-color: #000;
 }

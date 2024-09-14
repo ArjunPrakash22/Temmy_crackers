@@ -5,7 +5,7 @@ import './EditModal.css'; // Ensure you have proper styling for the modal
 const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
     const defaultFormData = isProduct
         ? { name: '', actualRate: '', discountRate: '', category: '', per: '' }
-        : { date:'',name: '', phoneno: '',email: '',city: '', state: '', product: '', date: '', bill: '' };
+        : { date:'',name: '', phoneno: '',email: '',city: '', state: '', date: '',status:'',Products:'', bill: '' };
 
     const [formData, setFormData] = useState(defaultFormData);
 
@@ -17,6 +17,8 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
         }
     }, [data, isProduct]);
 
+  
+    
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -109,7 +111,7 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                         </>
                     ) : (
                         <>
-                        <label className="modal-label">
+                        {/* <label className="modal-label">
                                 Date:
                                 <input
                                     className="modal-input"
@@ -119,7 +121,7 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                                     onChange={handleChange}
                                     required
                                 />
-                            </label>
+                            </label> */}
                             <label className="modal-label">
                                 Customer Name:
                                 <input
@@ -136,8 +138,8 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                                 <input
                                     className="modal-input"
                                     type="text"
-                                    name="phoneno"
-                                    value={formData.phoneno|| ''}
+                                    name="phone_no"
+                                    value={formData.phoneNumber|| ''}
                                     onChange={handleChange}
                                     required
                                 />
@@ -176,12 +178,23 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                                 />
                             </label>
                             <label className="modal-label">
-                                Product:
+                                Status:
                                 <input
                                     className="modal-input"
                                     type="text"
-                                    name="product"
-                                    value={formData.product || ''}
+                                    name="status"
+                                    value={formData.status || ''}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </label>
+                            <label className="modal-label">
+                                Status:
+                                <input
+                                    className="modal-input"
+                                    type="text"
+                                    name="status"
+                                    value={formData.status || ''}
                                     onChange={handleChange}
                                     required
                                 />
@@ -193,7 +206,7 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                                     className="modal-input"
                                     type="number"
                                     name="bill"
-                                    value={formData.bill || ''}
+                                    value={formData.totalAmountAfterDiscount || ''}
                                     onChange={handleChange}
                                     required
                                 />
