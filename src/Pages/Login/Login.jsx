@@ -6,6 +6,7 @@ import { Link,useNavigate } from "react-router-dom";
 import CryptoJS from 'crypto-js';
 import './Login.css';
 import adminlogo from '../../Assets/Pictures/logo1.png'
+import { Navbar } from '../../Component';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -24,7 +25,7 @@ const Login = () => {
       if(user_pswd===usersData[0].pswd){
         console.log("Success")
         window.history.replaceState(null, null, "/admin");
-        navigate("/admin");
+        navigate("/admin",{ state: { key: username } });
       }else{
         setErrormsg("Incorrect Password")
         console.log("Failure")
@@ -38,6 +39,7 @@ const Login = () => {
 
   return (
     <div className="login-container">
+      <Navbar/>
         <div className='logo-sec'>
             <img className='logo-img-sec' src={adminlogo}/>
         </div>

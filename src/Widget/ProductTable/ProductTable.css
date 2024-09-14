@@ -9,6 +9,7 @@
     border-collapse: collapse;
 }
 
+
 .comp_td, .comp_th {
     border: 1px solid #dddddd;
     padding: 20px;
@@ -21,25 +22,38 @@
 }
 
 .comp_tr:nth-child(even) {
-    background-color: #ffce50;
+    background-color: #ffd466;
     font-weight: 600;
 }
 
 .comp_tr:nth-child(odd) {
-    background-color: #9901d5;
-    color: white;
+    background-color: #be34fe;
+    color: black;
     font-weight: 600;
 }
 
 .edit-btn-admin {
     padding: 5px 10px;
     border: none;
-    background: #ff0000;
+    background: #275400;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.delete-btn-admin{
+    margin-left: 10px;
+    padding: 5px 10px;
+    border: none;
+    background: #ff3b3b;
     color: white;
     border-radius: 5px;
     cursor: pointer;
 }
 
 .edit-btn-admin:hover {
-    background: #ff6600;
+    background: #1eff00;
+    color: #000;
+}
+.delete-btn-admin:hover{
+    background-color: #000;
 }

@@ -21,7 +21,7 @@ const Navbar = () => {
       {/* Conditionally render the hero section only on the home page */}
       {location.pathname === '/' && (
         <div className='hero-section'>
-          <Link to="/product" className='explore-products'>Explore Products</Link>
+          <Link to="/product" className='explore-products'>ORDER NOW</Link>
         </div>
       )}
 
