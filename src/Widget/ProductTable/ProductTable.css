@@ -57,3 +57,13 @@
 .delete-btn-admin:hover{
     background-color: #000;
 }
+@media(max-width:480px){
+    .comp_th{
+        font-size: 12px;
+        padding: 10px;
+    }
+    .comp_td{
+        font-size: 12px;
+        padding: 10px;
+    }
+}
