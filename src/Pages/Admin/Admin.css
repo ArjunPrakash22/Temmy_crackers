@@ -49,8 +49,11 @@
 }
 
 .product_table {
-    margin: 0 auto;
-    width: 80%;
+    margin-top: 20px;
+    /* margin: 0 auto; */
+    width: 100%;
+    overflow-x: scroll;
+    margin-bottom: 20px;
 }
 
 .logout-btn {
@@ -60,4 +63,39 @@
     background-color: #ff4c4c;
     color: white;
     border-radius: 5px;
+}
+.add-product-btn{
+    font-size: 18px;
+    padding: 5px 10px;
+    border: none;
+    background: #5400bc;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.add-product-btn:hover{
+    background: #ffce50;
+    color: black;
+}
+
+.bill-btn-admin{
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    background: #ff4c4c;
+    border-radius: 5px;
+}
+ 
+
+@media(max-width:480px){
+    .admin-logo-img{
+        width: 300px;
+    }
+    .admin-sec{
+        padding: 0;
+    }
+    .product_table{
+        width: 90%;
+    }
 }

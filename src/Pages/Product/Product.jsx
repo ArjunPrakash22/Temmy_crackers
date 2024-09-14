@@ -76,8 +76,8 @@ const Product = () => {
           <tr className='comp_tr thead'>
             <th className='comp_th'>S.No</th>
             <th className='comp_th'>Name of the Product</th>
-            <th className='comp_th'>Actual Rate</th>
-            <th className='comp_th'>Discount Rate (Current Price)</th>
+            <th className='comp_th'>Marked Price</th>
+            <th className='comp_th'>Our Price</th>
             <th className='comp_th'>Quantity</th>
             <th className='comp_th'>Total Price</th>
           </tr>

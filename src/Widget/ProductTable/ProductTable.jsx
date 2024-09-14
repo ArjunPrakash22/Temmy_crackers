@@ -1,39 +1,39 @@
-import React from "react";
-import "./ProductTable.css";
-const ProductTable = ({
-  data = null,
-  columns = null,
-  
-  // hover = true,
-  // striped = true,
-}) => {
-  const getCaps = (head, field) => {
-    if (head) return head.toUpperCase();
-    return field.toUpperCase();
-  };
-  return (
-    <div>
-      <table className="comp_table">
+import React from 'react';
+import './ProductTable.css'; // Ensure correct path to CSS file
 
-        <tr className="comp_tr">
-          {columns &&
-            columns.map((head) => <th className="comp_th">{getCaps(head.header, head.field)}</th>)}
-        </tr>
+const ProductTable = ({ columns, data, onEdit }) => {
+    const renderHeader = () => {
+        return columns.map((col) => (
+            <th className='comp_th' key={col.field}>{col.header || col.field}</th>
+        ));
+    };
 
-        {data &&
-          data.map((row) => (
-        <tr className="comp_tr"/*className={`${hover && "hover"} ${striped && "striped"}`}*/>
-              {columns.map((col) => (
-            <td className="comp_td">{row[col.field]}</td>
-              ))}
-        </tr>
-       
-        ))}
-        
-      </table>
-      {data ? null : <p>No Row to show :</p>}
-    </div>
-  );
+    const renderBody = () => {
+        return data.map((row) => (
+            <tr className='comp_tr' key={row.id}>
+                {columns.map((col) => (
+                    <td className='comp_td' key={col.field}>
+                        {col.field === 'edit' ? (
+                            <button className='edit-btn-admin' onClick={() => onEdit(row)}>Edit</button>
+                        ) : (
+                            row[col.field] || (col.render ? col.render(row) : '')
+                        )}
+                    </td>
+                ))}
+            </tr>
+        ));
+    };
+
+    return (
+        <div className='comp_table'>
+            <table>
+                <thead>
+                    <tr className='comp_tr'>{renderHeader()}</tr>
+                </thead>
+                <tbody>{renderBody()}</tbody>
+            </table>
+        </div>
+    );
 };
 
 export default ProductTable;
