@@ -1,15 +1,47 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Product.css'; 
 import { Navbar } from '../../Component';
+import { collection,doc,setDoc, addDoc, getDocs,query,where,orderBy,limit } from "firebase/firestore";
+import { db } from '../../firebase';
 
 const Product = () => {
   const [products, setProducts] = useState([
-    { id: 1, name: "2 3/4 inch Kuruvi", actualRate: 36, discountRate: 9, quantity: 0 },
-    { id: 2, name: "3 1/2 inch Lakshmi crackers", actualRate: 60, discountRate: 15, quantity: 0 },
-    { id: 3, name: "4 inch Lakshmi crackers", actualRate: 80, discountRate: 20, quantity: 0 },
-    { id: 4, name: "4 inch Gold Lakshmi crackers", actualRate: 120, discountRate: 30, quantity: 0 },
-    { id: 5, name: "4 inch Delux Lakshmi crackers", actualRate: 132, discountRate: 33, quantity: 0 },
+    // { id: 1, name: "2 3/4 inch Kuruvi", actualRate: 36, discountRate: 9, quantity: 0 },
+    // { id: 2, name: "3 1/2 inch Lakshmi crackers", actualRate: 60, discountRate: 15, quantity: 0 },
+    // { id: 3, name: "4 inch Lakshmi crackers", actualRate: 80, discountRate: 20, quantity: 0 },
+    // { id: 4, name: "4 inch Gold Lakshmi crackers", actualRate: 120, discountRate: 30, quantity: 0 },
+    // { id: 5, name: "4 inch Delux Lakshmi crackers", actualRate: 132, discountRate: 33, quantity: 0 },
   ]);
+
+  const productsCollectionRef=collection(db,'products');
+
+  useEffect(() => {
+    // Define the async function inside useEffect
+    const fetchProducts = async () => {
+      console.log("Use effect");
+      try {
+        const querySnapshot = await getDocs(productsCollectionRef);
+    
+        const jsonObjects = [];
+
+        querySnapshot.forEach((doc) => {
+          if (doc.id != 0) {
+            var productdata=doc.data()
+            productdata.quantity=0;
+            jsonObjects.push(productdata); 
+          }
+        });
+  
+        setProducts(jsonObjects);
+      } catch (error) {
+        console.error("Error fetching documents: ", error);
+      }
+    };
+  
+    fetchProducts();
+
+  }, []);
+  
 
   const [formDetails, setFormDetails] = useState({
     name: '',
@@ -50,7 +82,7 @@ const Product = () => {
     0
   );
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const { name, city, state, address, phoneNumber, email } = formDetails;
     const subject = `Order Details for ${name}`;
     const body = `
@@ -62,9 +94,65 @@ const Product = () => {
       Total Discount Amount: ₹${totalDiscountAmount}
       Total Amount After Discount: ₹${totalAmountAfterDiscount}
     `;
+
+
+    //get me the products as a list inside here
+    // console.log(products)
+    const Products = products
+  .filter((product) => product.quantity != 0) // Only include products with non-zero quantity
+  .reduce((acc, product) => {
+    acc[product.id] = product;  // Use the product's 'id' as the key
+    return acc;
+  }, {});
+
+    console.log(Products)
+    const status="pending"
+    const date=new Date().toDateString();
+    const ordersCollectionRef=collection(db,'orders');
+    const q=query(ordersCollectionRef, orderBy("id","desc"), limit(1))
+    const querySnapshot = await getDocs(q);
+    const firstDoc = querySnapshot.docs[0];
+
+    const lastID=firstDoc.data().id
+    // console.log(lastID)
+
+
+    try {
+      const id=(lastID+1);
+      const docRef = await setDoc(doc(db, "orders",id.toString()),{
+        id, 
+        name,
+        email,
+        city,
+        state,
+        address,
+        phoneNumber,
+        totalDiscountAmount,
+        totalAmountAfterDiscount,
+        status,
+        date,
+        Products
+    });
+
+    //   const docRef = await addDoc(collection(db, "orders"),{
+    //     id, 
+    //     name,
+    //     email,
+    //     city,
+    //     state,
+    //     address,
+    //     phoneNumber,
+    //     totalDiscountAmount,
+    //     totalAmountAfterDiscount,
+    //     status,
+    //     date
+    // });
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
     
-    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailtoLink;
+    // const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    // window.location.href = mailtoLink;
   };
 
   return (

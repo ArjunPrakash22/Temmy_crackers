@@ -40,6 +40,18 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                     {isProduct ? (
                         <>
                             <label className="modal-label">
+                                Product id:
+                                <input
+                                    className="modal-input"
+                                    type="number"
+                                    name="product_id"
+                                    value={formData.id || ''}
+                                    onChange={handleChange}
+                                    required
+                                    disabled
+                                />
+                            </label>
+                            <label className="modal-label">
                                 Product Name:
                                 <input
                                     className="modal-input"

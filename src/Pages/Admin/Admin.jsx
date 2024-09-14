@@ -1,10 +1,12 @@
 // Admin.jsx
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import adminlogo from '../../Assets/Pictures/logo2.png';
 import './Admin.css';
 import { ProductTable, EditModal, BillModal } from '../../Widget';
 import { product_list } from '../../Constants/Products'; // Replace with actual data for orders
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { collection,doc,setDoc,updateDoc, addDoc, getDocs,query,where,orderBy,limit } from "firebase/firestore";
+import { db } from '../../firebase';
 
 const Admin = () => {
     const [activeTab, setActiveTab] = useState('product');
@@ -13,6 +15,21 @@ const Admin = () => {
     const [editData, setEditData] = useState(null);
     const [billData, setBillData] = useState(null);
     const [isProduct, setIsProduct] = useState(true);
+
+    const [products, setProducts] = useState([
+        // { id: 1, name: "2 3/4 inch Kuruvi", actualRate: 36, discountRate: 9, quantity: 0 },
+        // { id: 2, name: "3 1/2 inch Lakshmi crackers", actualRate: 60, discountRate: 15, quantity: 0 },
+        // { id: 3, name: "4 inch Lakshmi crackers", actualRate: 80, discountRate: 20, quantity: 0 },
+        // { id: 4, name: "4 inch Gold Lakshmi crackers", actualRate: 120, discountRate: 30, quantity: 0 },
+        // { id: 5, name: "4 inch Delux Lakshmi crackers", actualRate: 132, discountRate: 33, quantity: 0 },
+      ]);
+
+    const [orders, setOrders]=useState([])
+
+    const navigate = useNavigate();
+
+    const productsCollectionRef=collection(db,'products');
+    const ordersCollectionRef=collection(db,'orders');
 
     const productColumns = [
         { field: 'id', header: 'Sno' },
@@ -28,11 +45,11 @@ const Admin = () => {
         { field: 'id', header: 'Order ID' },
         { field: 'date', header: 'Date' },
         { field: 'name', header: 'Customer Name' },
-        { field: 'phoneno', header: 'Phone no.' },
+        { field: 'phoneNumber', header: 'Phone no.' },
         { field: 'email', header: 'Email id' },
         { field: 'city', header: 'City' },
         { field: 'state', header: 'State' },
-        { field: 'product', header: 'Products' },
+        // { field: 'product', header: 'Products' },
         
         {
             field: 'bill',
@@ -45,6 +62,53 @@ const Admin = () => {
         },
         { field: 'edit', header: 'Actions' }, // Ensure 'edit' column has a header
     ];
+
+    const fetchProducts = async () => {
+        try {
+          const querySnapshot = await getDocs(productsCollectionRef);
+      
+          const jsonObjects = [];
+  
+          querySnapshot.forEach((doc) => {
+            if (doc.id != 0) {
+              var productdata=doc.data()
+              productdata.quantity=0;
+              jsonObjects.push(productdata); 
+            }
+          });
+    
+          setProducts(jsonObjects);
+        } catch (error) {
+          console.error("Error fetching documents: ", error);
+        }
+      };
+
+      const fetchOrders = async () => {
+
+        try {
+          const querySnapshot = await getDocs(ordersCollectionRef);
+      
+          const jsonOrderObjects = [];
+  
+          querySnapshot.forEach((doc) => {
+            if (doc.id != 0) {
+              var orderdata=doc.data()
+              jsonOrderObjects.push(orderdata); 
+            }
+          });
+    
+        //   setProducts(jsonObjects);
+        console.log(jsonOrderObjects)
+        setOrders(jsonOrderObjects)
+        } catch (error) {
+          console.error("Error fetching documents: ", error);
+        }
+      };
+
+    useEffect(() => {
+        fetchProducts();
+        fetchOrders();
+      }, []);
     
 
     const handleTabSwitch = (tab) => {
@@ -54,6 +118,7 @@ const Admin = () => {
     const handleEditProduct = (rowData) => {
         setIsProduct(true);
         setEditData(rowData);
+        console.log(rowData)
         setShowModal(true);
     };
 
@@ -70,24 +135,25 @@ const Admin = () => {
     };
 
     const handleEditOrder = (rowData) => {
-        setIsProduct(false);
+        setIsProduct(true);
         setEditData(rowData);
         setShowModal(true);
     };
 
     const handleAddOrder = () => {
-        setIsProduct(false);
-        setEditData({
-            date: '',
-            name: '',
-            phoneno: '',
-            email: '',
-            city: '',
-            state: '',
-            product: '',
-            bill: '',
-        });
-        setShowModal(true);
+        navigate("/product")
+        // setIsProduct(false);
+        // setEditData({
+        //     date: '',
+        //     name: '',
+        //     phoneno: '',
+        //     email: '',
+        //     city: '',
+        //     state: '',
+        //     product: '',
+        //     bill: '',
+        // });
+        // setShowModal(true);
     };
 
     const handlePreviewBill = (rowData) => {
@@ -95,10 +161,53 @@ const Admin = () => {
         setShowBillModal(true);
     };
 
-    const handleSave = (updatedData) => {
+    const handleSave = async (updatedData) => {
         console.log('Updated Data:', updatedData);
+        const { id, name, actualRate, discountRate, category, per } = updatedData;
+    
+        try {
+            if (id) {
+                console.log("hi");
+                const docRef = doc(db, "products", id.toString());
+                await updateDoc(docRef, {
+                    id, 
+                    name,
+                    actualRate,
+                    discountRate,
+                    category,
+                    per,
+                });
+            } else {
+                console.log("bye");
+                const q = query(productsCollectionRef, orderBy("id", "desc"), limit(1));
+                const querySnapshot = await getDocs(q);
+                const firstDoc = querySnapshot.docs[0];
+    
+                const lastID = firstDoc ? firstDoc.data().id : 0;
+                const newID = lastID + 1;
+    
+                await setDoc(doc(db, "products", newID.toString()), {
+                    id: newID,
+                    name,
+                    actualRate,
+                    discountRate,
+                    category,
+                    per,
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
         setShowModal(false);
+        fetchProducts()
     };
+    
+
+    const logout=()=>{
+        window.history.pushState(null, null, "/");
+        window.history.replaceState(null, null, "/");
+        navigate("/");
+    }
 
     return (
         <div className="admin-sec">
@@ -106,7 +215,8 @@ const Admin = () => {
                 <img className="admin-logo-img" src={adminlogo} alt="Admin Logo" />
             </div>
             <h1 className="admin-h1">ADMIN PANEL</h1>
-            <Link to="/login" className="logout-btn">LOG OUT</Link>
+            <button type="submit" className="logout-btn" onClick={logout}>Logout</button>
+            {/* <Link to="/login" className="logout-btn">LOG OUT</Link> */}
 
             <div className="tab-container">
                 <div
@@ -131,7 +241,7 @@ const Admin = () => {
                             + Add Product
                         </button>
                         <div className="product_table">
-                            <ProductTable columns={productColumns} data={product_list} onEdit={handleEditProduct} />
+                            <ProductTable columns={productColumns} data={products} onEdit={handleEditProduct} />
                         </div>
                     </div>
                 )}
@@ -143,7 +253,7 @@ const Admin = () => {
                             + Add Order
                         </button>
                         <div className="product_table">
-                            <ProductTable columns={orderColumns} data={product_list} onEdit={handleEditOrder} />
+                            <ProductTable columns={orderColumns} data={orders} onEdit={handleEditOrder} />
                         </div>
                     </div>
                 )}
