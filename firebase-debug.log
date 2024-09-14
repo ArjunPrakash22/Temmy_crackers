@@ -1,0 +1,42 @@
+[debug] [2024-09-14T17:42:38.277Z] ----------------------------------------------------------------------
+[debug] [2024-09-14T17:42:38.279Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\arjun\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2024-09-14T17:42:38.279Z] CLI Version:   13.16.0
+[debug] [2024-09-14T17:42:38.280Z] Platform:      win32
+[debug] [2024-09-14T17:42:38.280Z] Node Version:  v21.6.0
+[debug] [2024-09-14T17:42:38.280Z] Time:          Sat Sep 14 2024 23:12:38 GMT+0530 (India Standard Time)
+[debug] [2024-09-14T17:42:38.280Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-09-14T17:42:38.283Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2024-09-14T17:42:38.364Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-09-14T17:42:38.364Z] > authorizing via signed-in user (arjunprakashas03@gmail.com)
+[debug] [2024-09-14T17:42:38.364Z] [iam] checking project temmy-crackers for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2024-09-14T17:42:38.365Z] > refreshing access token with scopes: []
+[debug] [2024-09-14T17:42:38.366Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-09-14T17:42:38.366Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-09-14T17:42:40.699Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2024-09-14T17:42:40.700Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2024-09-14T17:42:42.650Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2024-09-14T17:42:42.650Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-09-14T17:42:42.659Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/temmy-crackers:testIamPermissions [none]
+[debug] [2024-09-14T17:42:42.659Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/temmy-crackers:testIamPermissions x-goog-quota-user=projects/temmy-crackers
+[debug] [2024-09-14T17:42:42.659Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/temmy-crackers:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2024-09-14T17:42:45.058Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/temmy-crackers:testIamPermissions 200
+[debug] [2024-09-14T17:42:45.058Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/temmy-crackers:testIamPermissions {}
+[debug] [2024-09-14T17:42:45.059Z] [iam] error while checking permissions, command may fail: FirebaseError: Authorization failed. This account is missing the following required permissions on project temmy-crackers:
+
+  datastore.indexes.create
+  datastore.indexes.delete
+  datastore.indexes.list
+  datastore.indexes.update
+  firebase.projects.get
+  firebasehosting.sites.update
+[debug] [2024-09-14T17:42:45.060Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/temmy-crackers [none]
+[debug] [2024-09-14T17:42:46.662Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/temmy-crackers 403
+[debug] [2024-09-14T17:42:46.662Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/temmy-crackers {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2024-09-14T17:42:46.664Z] HTTP Error: 403, The caller does not have permission
+[debug] [2024-09-14T17:42:47.538Z] FirebaseError: HTTP Error: 403, The caller does not have permission
+    at responseToError (C:\Users\arjun\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:49:12)
+    at RetryOperation._fn (C:\Users\arjun\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:305:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[error] 
+[error] Error: Failed to get Firebase project temmy-crackers. Please make sure the project exists and your account has permission to access it.
