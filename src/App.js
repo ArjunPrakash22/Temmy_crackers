@@ -3,7 +3,7 @@ import { Routes, Route,useLocation } from "react-router-dom";
 import './App.css';
 import {Home,Login,Admin,Product,Contact} from './Pages'
 import {Navbar,Footer} from './Component'
-import { Backtotop } from "./Widget";
+import { Backtotop,Radialmenu } from "./Widget";
 
 function App() {
 
@@ -18,6 +18,7 @@ function App() {
         <Route path="/contact" element={<Contact/>}/>
       </Routes>
       <Backtotop/>
+      <Radialmenu/>
       <Footer/>
     </div>
   );

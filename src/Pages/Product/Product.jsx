@@ -70,6 +70,7 @@ const Product = () => {
   return (
     <div className='product-sec'>
       <Navbar />
+      <p className='product-head'>PRODUCT</p>
       <div className='comp-table-sec'>
       <table className='comp_table'>
         <thead className='comp_thead'>
@@ -117,7 +118,7 @@ const Product = () => {
       {/* Form to capture user details */}
       <div className='form-sec-cont'>
       <div className="form-section">
-        <h3>Fill the Details</h3>
+        <h3>FILL THE DETAILS</h3>
         <input className="product-input"
           type="text"
           name="name"

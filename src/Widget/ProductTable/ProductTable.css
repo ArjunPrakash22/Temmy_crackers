@@ -9,6 +9,7 @@
     border-collapse: collapse;
 }
 
+
 .comp_td, .comp_th {
     border: 1px solid #dddddd;
     padding: 20px;
@@ -21,13 +22,13 @@
 }
 
 .comp_tr:nth-child(even) {
-    background-color: #ffce50;
+    background-color: #ffe57f;
     font-weight: 600;
 }
 
 .comp_tr:nth-child(odd) {
-    background-color: #9901d5;
-    color: white;
+    background-color: #cf4dff;
+    color: black;
     font-weight: 600;
 }
 

@@ -16,14 +16,14 @@ const Footer = () => {
         <div className="footer-left">
           <div className="footer-left1">
             <a
-              href="tel:+1234567890"
+              href="tel:+916380519757"
               className="footer-item"
               aria-label="Call Us"
             >
               <FaPhoneAlt className="footer-icon" />
             </a>
             <a
-              href="https://wa.me/1234567890"
+              href="https://wa.me/6380519757"
               className="footer-item"
               aria-label="Chat on WhatsApp"
               target="_blank"
