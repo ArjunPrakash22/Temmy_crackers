@@ -15,6 +15,7 @@ const Admin = () => {
     const [editData, setEditData] = useState(null);
     const [billData, setBillData] = useState(null);
     const [isProduct, setIsProduct] = useState(true);
+    const [searchCategory, setSearchCategory] = useState('');
 const location=useLocation();
     const { key } = location.state || {}; 
     const [products, setProducts] = useState([
@@ -192,6 +193,10 @@ const location=useLocation();
             console.error("Error deleting document: ", error);
         }
     };
+
+    const filteredProducts = products.filter(product =>
+        product.category.toLowerCase().includes(searchCategory.toLowerCase())
+    );
     
     const handleSave = async (updatedData) => {
         // console.log('Updated Data:', updatedData);
@@ -292,23 +297,32 @@ const location=useLocation();
             </div>
 
             <div className="tab-content">
-    {activeTab === 'product' && (
-        <div className="product_list_tab">
-            <p className="product_head">Product Management:</p>
-            <button className="add-product-btn" onClick={handleAddProduct}>
-                + Add Product
-            </button>
-            <div className="product_table">
-                <ProductTable
-                    columns={productColumns}
-                    data={products}
-                    onEdit={handleEditProduct}
-                    onDelete={handleProductDelete} // Pass onDelete function
-                />
-            </div>
-        </div>
-    )}
+            {activeTab === 'product' && (
+                    <div className="product_list_tab">
+                        <p className="product_head">Product Management:</p>
+                        <button className="add-product-btn" onClick={handleAddProduct}>
+                            + Add Product
+                        </button>
+                        <div className='search-container'>
+                        <input
+                            type="text"
+                            placeholder="Search by category"
+                            value={searchCategory}
+                            onChange={(e) => setSearchCategory(e.target.value)}
+                            className="search-input"
+                        />
+                        </div>
 
+                        <div className="product_table">
+                            <ProductTable
+                                columns={productColumns}
+                                data={filteredProducts} // Pass the filtered products
+                                onEdit={handleEditProduct}
+                                onDelete={handleProductDelete}
+                            />
+                        </div>
+                    </div>
+                )}
     {activeTab === 'order' && (
         <div className="order_list_tab">
             <p className="product_head">Order Management:</p>

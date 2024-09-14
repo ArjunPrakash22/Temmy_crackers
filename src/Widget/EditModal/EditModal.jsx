@@ -1,11 +1,10 @@
-// EditModal.jsx
 import React, { useState, useEffect } from 'react';
 import './EditModal.css'; // Ensure you have proper styling for the modal
 
 const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
     const defaultFormData = isProduct
         ? { name: '', actualRate: '', discountRate: '', category: '', per: '' }
-        : { date:'',name: '', phoneno: '',email: '',city: '', state: '', date: '',status:'',Products:'', bill: '' };
+        : { date:'', name: '', phoneno: '', email: '', city: '', state: '', date: '', status: '', Products: '', bill: '' };
 
     const [formData, setFormData] = useState(defaultFormData);
 
@@ -17,8 +16,6 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
         }
     }, [data, isProduct]);
 
-  
-    
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -42,7 +39,7 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                     {isProduct ? (
                         <>
                             <label className="modal-label">
-                                Product id:
+                                Product ID:
                                 <input
                                     className="modal-input"
                                     type="number"
@@ -72,7 +69,6 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                                     name="actualRate"
                                     value={formData.actualRate || ''}
                                     onChange={handleChange}
-                                    required
                                 />
                             </label>
                             <label className="modal-label">
@@ -83,7 +79,6 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                                     name="discountRate"
                                     value={formData.discountRate || ''}
                                     onChange={handleChange}
-                                    required
                                 />
                             </label>
                             <label className="modal-label">
@@ -111,17 +106,6 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                         </>
                     ) : (
                         <>
-                        {/* <label className="modal-label">
-                                Date:
-                                <input
-                                    className="modal-input"
-                                    type="date"
-                                    name="date"
-                                    value={formData.date || ''}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </label> */}
                             <label className="modal-label">
                                 Customer Name:
                                 <input
@@ -134,21 +118,21 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                                 />
                             </label>
                             <label className="modal-label">
-                                Phone no.
+                                Phone No.:
                                 <input
                                     className="modal-input"
                                     type="text"
                                     name="phone_no"
-                                    value={formData.phoneNumber|| ''}
+                                    value={formData.phoneNumber || ''}
                                     onChange={handleChange}
                                     required
                                 />
                             </label>
                             <label className="modal-label">
-                                Email id:
+                                Email ID:
                                 <input
                                     className="modal-input"
-                                    type="text"
+                                    type="email"
                                     name="email"
                                     value={formData.email || ''}
                                     onChange={handleChange}
@@ -179,27 +163,17 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                             </label>
                             <label className="modal-label">
                                 Status:
-                                <input
+                                <select
                                     className="modal-input"
-                                    type="text"
                                     name="status"
-                                    value={formData.status || ''}
+                                    value={formData.status || 'pending'}
                                     onChange={handleChange}
                                     required
-                                />
+                                >
+                                    <option value="pending">Pending</option>
+                                    <option value="completed">Completed</option>
+                                </select>
                             </label>
-                            <label className="modal-label">
-                                Status:
-                                <input
-                                    className="modal-input"
-                                    type="text"
-                                    name="status"
-                                    value={formData.status || ''}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </label>
-                            
                             <label className="modal-label">
                                 Bill Amount:
                                 <input
