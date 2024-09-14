@@ -33,11 +33,14 @@ const Admin = () => {
     
     const orderColumns = [
         { field: 'id', header: 'Order ID' },
+        { field: 'date', header: 'Date' },
         { field: 'name', header: 'Customer Name' },
+        { field: 'phoneno', header: 'Phone no.' },
+        { field: 'email', header: 'Email id' },
         { field: 'city', header: 'City' },
         { field: 'state', header: 'State' },
         { field: 'product', header: 'Products' },
-        { field: 'date', header: 'Date' },
+        
         {
             field: 'bill',
             header: 'Bill',
@@ -83,11 +86,13 @@ const Admin = () => {
     const handleAddOrder = () => {
         setIsProduct(false);
         setEditData({
+            date: '',
             name: '',
+            phoneno: '',
+            email: '',
             city: '',
             state: '',
             product: '',
-            date: '',
             bill: '',
         });
         setShowModal(true);
