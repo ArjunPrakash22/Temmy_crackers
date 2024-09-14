@@ -5,7 +5,7 @@ import './EditModal.css'; // Ensure you have proper styling for the modal
 const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
     const defaultFormData = isProduct
         ? { name: '', actualRate: '', discountRate: '', category: '', per: '' }
-        : { name: '', city: '', state: '', product: '', date: '', bill: '' };
+        : { date:'',name: '', phoneno: '',email: '',city: '', state: '', product: '', date: '', bill: '' };
 
     const [formData, setFormData] = useState(defaultFormData);
 
@@ -97,6 +97,17 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                         </>
                     ) : (
                         <>
+                        <label className="modal-label">
+                                Date:
+                                <input
+                                    className="modal-input"
+                                    type="date"
+                                    name="date"
+                                    value={formData.date || ''}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </label>
                             <label className="modal-label">
                                 Customer Name:
                                 <input
@@ -104,6 +115,28 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                                     type="text"
                                     name="name"
                                     value={formData.name || ''}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </label>
+                            <label className="modal-label">
+                                Phone no.
+                                <input
+                                    className="modal-input"
+                                    type="text"
+                                    name="phoneno"
+                                    value={formData.phoneno|| ''}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </label>
+                            <label className="modal-label">
+                                Email id:
+                                <input
+                                    className="modal-input"
+                                    type="text"
+                                    name="email"
+                                    value={formData.email || ''}
                                     onChange={handleChange}
                                     required
                                 />
@@ -141,17 +174,7 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                                     required
                                 />
                             </label>
-                            <label className="modal-label">
-                                Date:
-                                <input
-                                    className="modal-input"
-                                    type="date"
-                                    name="date"
-                                    value={formData.date || ''}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </label>
+                            
                             <label className="modal-label">
                                 Bill Amount:
                                 <input
