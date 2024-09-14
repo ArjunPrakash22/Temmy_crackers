@@ -4,8 +4,8 @@ import './EditModal.css'; // Ensure you have proper styling for the modal
 
 const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
     const defaultFormData = isProduct
-        ? { name: '', actualRate: '', discountRate: '', category: '', per: '' }
-        : { name: '', city: '', state: '', product: '', date: '', bill: '' };
+        ? { id: '',name: '', actualRate: '', discountRate: '', category: '', per: '' }
+        : { id: '',name: '', city: '', state: '', product: '', date: '', bill: '' };
 
     const [formData, setFormData] = useState(defaultFormData);
 
@@ -39,6 +39,18 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                 <form onSubmit={handleSubmit}>
                     {isProduct ? (
                         <>
+                            <label className="modal-label">
+                                Product id:
+                                <input
+                                    className="modal-input"
+                                    type="number"
+                                    name="product_id"
+                                    value={formData.id || ''}
+                                    onChange={handleChange}
+                                    required
+                                    disabled
+                                />
+                            </label>
                             <label className="modal-label">
                                 Product Name:
                                 <input
@@ -97,6 +109,18 @@ const EditModal = ({ show, onClose, data, onSave, isProduct }) => {
                         </>
                     ) : (
                         <>
+                            <label className="modal-label">
+                                Order id:
+                                <input
+                                    className="modal-input"
+                                    type="number"
+                                    name="Order Id"
+                                    value={formData.id || ''}
+                                    onChange={handleChange}
+                                    required
+                                    disabled
+                                />
+                            </label>
                             <label className="modal-label">
                                 Customer Name:
                                 <input

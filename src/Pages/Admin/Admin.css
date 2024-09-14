@@ -63,6 +63,7 @@
     background-color: #ff4c4c;
     color: white;
     border-radius: 5px;
+    cursor: pointer;
 }
 .add-product-btn{
     font-size: 18px;

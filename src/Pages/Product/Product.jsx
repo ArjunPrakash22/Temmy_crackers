@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './Product.css'; 
 import { Navbar } from '../../Component';
+import { collection,doc,setDoc, addDoc, getDocs,query,where,orderBy,limit } from "firebase/firestore";
+import { db } from '../../firebase';
 
 const Product = () => {
   const [products, setProducts] = useState([
@@ -50,7 +52,7 @@ const Product = () => {
     0
   );
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const { name, city, state, address, phoneNumber, email } = formDetails;
     const subject = `Order Details for ${name}`;
     const body = `
@@ -62,9 +64,55 @@ const Product = () => {
       Total Discount Amount: ₹${totalDiscountAmount}
       Total Amount After Discount: ₹${totalAmountAfterDiscount}
     `;
+
+
+    //get me the products as a list inside here
+    const status="pending"
+    const date=new Date().toDateString();
+    const ordersCollectionRef=collection(db,'orders');
+    const q=query(ordersCollectionRef, orderBy("id","desc"), limit(1))
+    const querySnapshot = await getDocs(q);
+    const firstDoc = querySnapshot.docs[0];
+
+    const lastID=firstDoc.data().id
+    // console.log(lastID)
+
+
+    try {
+      const id=(lastID+1);
+      const docRef = await setDoc(doc(db, "orders",id.toString()),{
+        id, 
+        name,
+        email,
+        city,
+        state,
+        address,
+        phoneNumber,
+        totalDiscountAmount,
+        totalAmountAfterDiscount,
+        status,
+        date
+    });
+
+    //   const docRef = await addDoc(collection(db, "orders"),{
+    //     id, 
+    //     name,
+    //     email,
+    //     city,
+    //     state,
+    //     address,
+    //     phoneNumber,
+    //     totalDiscountAmount,
+    //     totalAmountAfterDiscount,
+    //     status,
+    //     date
+    // });
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
     
-    const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailtoLink;
+    // const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    // window.location.href = mailtoLink;
   };
 
   return (

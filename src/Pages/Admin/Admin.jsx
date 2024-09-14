@@ -4,7 +4,9 @@ import adminlogo from '../../Assets/Pictures/logo2.png';
 import './Admin.css';
 import { ProductTable, EditModal, BillModal } from '../../Widget';
 import { product_list } from '../../Constants/Products'; // Replace with actual data for orders
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { collection,doc,setDoc,updateDoc, addDoc, getDocs,query,where,orderBy,limit } from "firebase/firestore";
+import { db } from '../../firebase';
 
 const Admin = () => {
     const [activeTab, setActiveTab] = useState('product');
@@ -13,6 +15,11 @@ const Admin = () => {
     const [editData, setEditData] = useState(null);
     const [billData, setBillData] = useState(null);
     const [isProduct, setIsProduct] = useState(true);
+
+    const navigate = useNavigate();
+
+    const productsCollectionRef=collection(db,'products');
+    const ordersCollectionRef=collection(db,'orders');
 
     const productColumns = [
         { field: 'id', header: 'Sno' },
@@ -51,6 +58,7 @@ const Admin = () => {
     const handleEditProduct = (rowData) => {
         setIsProduct(true);
         setEditData(rowData);
+        console.log(rowData)
         setShowModal(true);
     };
 
@@ -67,7 +75,7 @@ const Admin = () => {
     };
 
     const handleEditOrder = (rowData) => {
-        setIsProduct(false);
+        setIsProduct(true);
         setEditData(rowData);
         setShowModal(true);
     };
@@ -90,10 +98,52 @@ const Admin = () => {
         setShowBillModal(true);
     };
 
-    const handleSave = (updatedData) => {
+    const handleSave = async (updatedData) => {
         console.log('Updated Data:', updatedData);
+        const { id, name, actualRate, discountRate, category, per } = updatedData;
+    
+        try {
+            if (id) {
+                console.log("hi");
+                const docRef = doc(db, "products", id.toString());
+                await updateDoc(docRef, {
+                    id, 
+                    name,
+                    actualRate,
+                    discountRate,
+                    category,
+                    per,
+                });
+            } else {
+                console.log("bye");
+                const q = query(productsCollectionRef, orderBy("id", "desc"), limit(1));
+                const querySnapshot = await getDocs(q);
+                const firstDoc = querySnapshot.docs[0];
+    
+                const lastID = firstDoc ? firstDoc.data().id : 0;
+                const newID = lastID + 1;
+    
+                await setDoc(doc(db, "products", newID.toString()), {
+                    id: newID,
+                    name,
+                    actualRate,
+                    discountRate,
+                    category,
+                    per,
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
         setShowModal(false);
     };
+    
+
+    const logout=()=>{
+        window.history.pushState(null, null, "/");
+        window.history.replaceState(null, null, "/");
+        navigate("/");
+    }
 
     return (
         <div className="admin-sec">
@@ -101,7 +151,8 @@ const Admin = () => {
                 <img className="admin-logo-img" src={adminlogo} alt="Admin Logo" />
             </div>
             <h1 className="admin-h1">ADMIN PANEL</h1>
-            <Link to="/login" className="logout-btn">LOG OUT</Link>
+            <button type="submit" className="logout-btn" onClick={logout}>Logout</button>
+            {/* <Link to="/login" className="logout-btn">LOG OUT</Link> */}
 
             <div className="tab-container">
                 <div
