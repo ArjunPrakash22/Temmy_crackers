@@ -85,14 +85,13 @@ const Product = () => {
   const handleSubmit = async () => {
     const { name, city, state, address, phoneNumber, email } = formDetails;
   
-    // Construct the order details for the email body
+    // Construct the order details for the email body in plain text format
     const subject = `Order Details for ${name}`;
-    
     let productDetails = products
       .filter(product => product.quantity !== 0)
       .map(product => 
         `${product.name} - Quantity: ${product.quantity}, Total Price: ₹${calculateTotal(product)}`
-      ).join('\n');  // Join all product details with line breaks
+      ).join('\n');
   
     const body = `
       Name: ${name}
@@ -100,18 +99,20 @@ const Product = () => {
       State: ${state}
       Address: ${address}
       Phone Number: ${phoneNumber}
-  
+    
       Ordered Products:
+      Product Name             Quantity        Total Price
+      ------------------       --------        ------------
       ${productDetails}
-  
-      Total Discount Amount: ₹${totalDiscountAmount}
-      Total Amount After Discount: ₹${totalAmountAfterDiscount}
+    
+      Amount Saved: ₹${totalDiscountAmount}
+      Total Amount: ₹${totalAmountAfterDiscount}
     `;
   
     const Products = products
-      .filter((product) => product.quantity !== 0) // Only include products with non-zero quantity
+      .filter((product) => product.quantity !== 0)
       .reduce((acc, product) => {
-        acc[product.id] = product;  // Use the product's 'id' as the key
+        acc[product.id] = product;
         return acc;
       }, {});
   
@@ -121,7 +122,6 @@ const Product = () => {
     const q = query(ordersCollectionRef, orderBy("id", "desc"), limit(1));
     const querySnapshot = await getDocs(q);
     const firstDoc = querySnapshot.docs[0];
-  
     const lastID = firstDoc.data().id;
   
     try {
@@ -141,18 +141,34 @@ const Product = () => {
         Products
       });
   
-      
-      alert("Order placed successfully!");
+      // Clear the form fields after submission
+      setFormDetails({
+        name: '',
+        city: '',
+        state: '',
+        address: '',
+        phoneNumber: '',
+        email: ''
+      });
   
-      
+      // Open the default email client with the formatted text email
       const mailtoLink = `mailto:Rathan.industries.svks@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       window.location.href = mailtoLink;
+  
+      // Refresh the page after a short delay to ensure email client opens
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000); // 1-second delay to ensure email client has time to open
   
     } catch (e) {
       console.error("Error adding document: ", e);
       alert("Failed to place the order. Please try again.");
     }
   };
+  
+  
+  
+  
   
 
   return (
@@ -192,11 +208,11 @@ const Product = () => {
         </tbody>
         <tfoot>
           <tr className='comp_tr'>
-            <td className='comp_td' colSpan="5" style={{ textAlign: 'right' }}>Total Discount Amount:</td>
+            <td className='comp_td' colSpan="5" style={{ textAlign: 'right' }}>Saved Amount:</td>
             <td className='comp_td'>₹{totalDiscountAmount}</td>
           </tr>
           <tr className='comp_tr'>
-            <td className='comp_td' colSpan="5" style={{ textAlign: 'right' }}>Total Amount After Discount:</td>
+            <td className='comp_td' colSpan="5" style={{ textAlign: 'right' }}>Total Amount</td>
             <td className='comp_td'>₹{totalAmountAfterDiscount}</td>
           </tr>
         </tfoot>
@@ -234,10 +250,9 @@ const Product = () => {
         <input className="product-input"
           type="text"
           name="address"
-          placeholder="Address"
+          placeholder="Address (optional)"
           value={formDetails.address}
           onChange={handleInputChange}
-          required
         />
         <input className="product-input"
           type="tel"
@@ -250,9 +265,10 @@ const Product = () => {
         <input className="product-input"
           type="email"
           name="email"
-          placeholder="Email (optional)"
+          placeholder="Email "
           value={formDetails.email}
           onChange={handleInputChange}
+          required
         />
 
         <button type="button" className="product-submit" onClick={handleSubmit}>
