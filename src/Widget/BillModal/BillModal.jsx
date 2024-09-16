@@ -11,6 +11,8 @@ const BillModal = ({ show, onClose, billData }) => {
     if (!show) return null;
     console.log(billData.Products[billData.id]);
 
+    const saved=0;
+
     // Extract products from billData
     const products = typeof billData.Products === 'object' && billData.Products !== null
         ? Object.values(billData.Products || {}) 
@@ -57,14 +59,12 @@ const BillModal = ({ show, onClose, billData }) => {
                             <tbody>
                                 {products.map((product, index) => {
                                     // Calculate the total price after discount
-                                    const discount = (product.discountRate || 0) / 100;
-                                    const price = (product.actualRate || 0) * product.quantity;
-                                    const priceAfterDiscount = price * (1 - discount);
+                                    const amt = (product.discountRate*product.quantity) ;
                                     return (
                                         <tr key={index}>
                                             <td>{product.name}</td>
                                             <td>{product.quantity}</td>
-                                            <td>{priceAfterDiscount.toFixed(2)}</td>
+                                            <td>{amt}</td>
                                             {/* <td>{product.discountRate}%</td> */}
                                         </tr>
                                     );

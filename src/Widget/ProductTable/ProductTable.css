@@ -19,9 +19,13 @@
 .comp_th {
     color: #fff;
     text-align: center;
+    background-color: #3d0188;
+}
+.comp_td{
+    background-color: #ffeab5;
 }
 
-.comp_tr:nth-child(even) {
+/* .comp_tr:nth-child(even) {
     background-color: #ffd466;
     font-weight: 600;
 }
@@ -30,7 +34,7 @@
     background-color: #be34fe;
     color: black;
     font-weight: 600;
-}
+} */
 
 .edit-btn-admin {
     padding: 5px 10px;

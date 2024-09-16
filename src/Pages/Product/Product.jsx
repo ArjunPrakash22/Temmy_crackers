@@ -13,8 +13,10 @@ const Product = () => {
     // { id: 5, name: "4 inch Delux Lakshmi crackers", actualRate: 132, discountRate: 33, quantity: 0 },
   ]);
   const [category, setCategory] = useState(''); 
+  const [validationErrors, setValidationErrors] = useState('');
 
   const productsCollectionRef=collection(db,'products');
+
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -55,6 +57,13 @@ const Product = () => {
     email: ''
   });
 
+
+
+
+  
+
+
+
   const handleQuantityChange = (id, newQuantity) => {
     const updatedProducts = products.map((product) =>
       product.id === id ? { ...product, quantity: newQuantity } : product
@@ -72,12 +81,15 @@ const Product = () => {
 
   // Calculate total price for each product (discount rate * quantity)
   const calculateTotal = (product) => product.discountRate * product.quantity;
-
+   
+  
   // Calculate total discount for all products
-  const totalDiscountAmount = products.reduce(
-    (acc, product) => acc + (product.actualRate - product.discountRate) * product.quantity,
-    0
-  );
+  const totalDiscountAmount = products.reduce((acc, product) => {
+    if (product.actualRate && product.discountRate) {
+      return acc + (product.actualRate - product.discountRate) * product.quantity;
+    }
+    return acc;
+  }, 0);
 
   // Calculate total amount after discount for all products
   const totalAmountAfterDiscount = products.reduce(
@@ -87,30 +99,54 @@ const Product = () => {
 
   const handleSubmit = async () => {
     const { name, city, state, address, phoneNumber, email } = formDetails;
+    setValidationErrors('');
   
-    // Construct the order details for the email body in plain text format
-    const subject = `Order Details for ${name}`;
-    let productDetails = products
+    if (!name || !city || !state || !phoneNumber || !email) {
+      setValidationErrors("Please fill in all the required fields.");
+      return;
+    }
+
+    const status = "pending";
+    const date = new Date().toDateString();
+    const ordersCollectionRef = collection(db, 'orders');
+    const q = query(ordersCollectionRef, orderBy("id", "desc"), limit(1));
+    const querySnapshot = await getDocs(q);
+    const firstDoc = querySnapshot.docs[0];
+    const lastID = firstDoc.data().id;
+    const id=lastID+1;
+
+    const subject=`Order details Order id:${id} and Order name:${name}`
+  
+    // Format the email body
+    const body = `Order ID: ${id}
+    Name: ${name}
+    City: ${city}
+    State: ${state}
+    Address: ${address}
+    Phone Number: ${phoneNumber}
+    
+    Ordered Products:
+    ------------------------------------------------------------
+    | Product Name                     | Quantity | Total Price  |
+    ------------------------------------------------------------
+    ${products
       .filter(product => product.quantity !== 0)
       .map(product => 
-        `${product.name} - Quantity: ${product.quantity}, Total Price: ₹${calculateTotal(product)}`
-      ).join('\n');
-  
-    const body = `
-      Name: ${name}
-      City: ${city}
-      State: ${state}
-      Address: ${address}
-      Phone Number: ${phoneNumber}
+        `| ${product.name.padEnd(30)} | ${String(product.quantity).padEnd(8)} | ₹${String(calculateTotal(product)).padStart(10)} |`
+      ).join('\n')}
+    ------------------------------------------------------------
     
-      Ordered Products:
-      Product Name             Quantity        Total Price
-      ------------------       --------        ------------
-      ${productDetails}
-    
-      Amount Saved: ₹${totalDiscountAmount}
-      Total Amount: ₹${totalAmountAfterDiscount}
+    Amount Saved: ₹${totalDiscountAmount}
+    Total Amount: ₹${totalAmountAfterDiscount}
     `;
+    
+    console.log(body);
+    
+  
+  
+  const mailtoLink = `mailto:Rathan.industries.svks@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}&html=true`;
+ 
+  
   
     const Products = products
       .filter((product) => product.quantity !== 0)
@@ -119,13 +155,7 @@ const Product = () => {
         return acc;
       }, {});
   
-    const status = "pending";
-    const date = new Date().toDateString();
-    const ordersCollectionRef = collection(db, 'orders');
-    const q = query(ordersCollectionRef, orderBy("id", "desc"), limit(1));
-    const querySnapshot = await getDocs(q);
-    const firstDoc = querySnapshot.docs[0];
-    const lastID = firstDoc.data().id;
+   
   
     try {
       const id = (lastID + 1);
@@ -144,7 +174,6 @@ const Product = () => {
         Products
       });
   
-      // Clear the form fields after submission
       setFormDetails({
         name: '',
         city: '',
@@ -154,11 +183,9 @@ const Product = () => {
         email: ''
       });
   
-      // Open the default email client with the formatted text email
-      const mailtoLink = `mailto:Rathan.industries.svks@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      // Encode the HTML body
       window.location.href = mailtoLink;
-  
-      // Refresh the page after a short delay to ensure email client opens
+      // Optionally refresh the page
       setTimeout(() => {
         window.location.reload();
       }, 1000); // 1-second delay to ensure email client has time to open
@@ -167,6 +194,49 @@ const Product = () => {
       console.error("Error adding document: ", e);
       alert("Failed to place the order. Please try again.");
     }
+  };
+  
+  
+  
+  
+
+  const isAnyProductSelected = products.some(product => product.quantity > 0);
+
+  const renderProductRows = () => {
+    let currentCategory = null;
+
+    return products.map((product, index) => {
+      const isNewCategory = product.category !== currentCategory;
+      currentCategory = product.category;
+
+      return (
+        <React.Fragment key={product.id}>
+          {isNewCategory && (
+            <tr className='comp_tr category-row'>
+              <td colSpan="7" className='category-header'>
+                {product.category}
+              </td>
+            </tr>
+          )}
+          <tr className='comp_tr'>
+            <td className='comp_td'>{product.id}</td>
+            <td className='comp_td'>{product.name}</td>
+            <td className='comp_td'><s>{product.actualRate}</s></td>
+            <td className='comp_td'>{product.discountRate}</td>
+            <td className='comp_td'>
+              <input
+                type="number"
+                value={product.quantity}
+                className='quantity'
+                min="0"
+                onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value))}
+              />
+            </td>
+            <td className='comp_td'>{calculateTotal(product)}</td>
+          </tr>
+        </React.Fragment>
+      );
+    });
   };
   
   
@@ -188,108 +258,123 @@ const Product = () => {
         />
       </div>
       <div className='comp-table-sec'>
-      <table className='comp_table'>
-        <thead className='comp_thead'>
-          <tr className='comp_tr thead'>
-            <th className='comp_th'>S.No</th>
-            <th className='comp_th'>Name of the Product</th>
-            <th className='comp_th'>Category</th>
-            <th className='comp_th'>Marked Price</th>
-            <th className='comp_th'>Our Price</th>
-            <th className='comp_th'>Quantity</th>
-            <th className='comp_th'>Total Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product) => (
-            <tr key={product.id} className='comp_tr'>
-              <td className='comp_td'>{product.id}</td>
-              <td className='comp_td'>{product.name}</td>
-              <td className='comp_td'>{product.category}</td>
-              <td className='comp_td'><s>{product.actualRate}</s></td> {/* Strikethrough for actual rate */}
-              <td className='comp_td'>{product.discountRate}</td> {/* Discount rate is current price */}
-              <td className='comp_td'>
-                <input
-                  type="number"
-                  value={product.quantity}
-                  min="0"
-                  onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value) || 0)}
-                />
-              </td>
-              <td className='comp_td'>{calculateTotal(product)}</td> {/* Total price = discountRate * quantity */}
+        <table className='comp_table'>
+          <thead className='comp_thead'>
+            <tr className='comp_tr thead'>
+              <th className='comp_th'>S.No</th>
+              <th className='comp_th'>Name of the Product</th>
+              <th className='comp_th'>Marked Price</th>
+              <th className='comp_th'>Our Price</th>
+              <th className='comp_th'>Quantity</th>
+              <th className='comp_th'>Total Price</th>
             </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr className='comp_tr'>
-            <td className='comp_td' colSpan="5" style={{ textAlign: 'right' }}>Saved Amount:</td>
-            <td className='comp_td'>₹{totalDiscountAmount}</td>
-          </tr>
-          <tr className='comp_tr'>
-            <td className='comp_td' colSpan="5" style={{ textAlign: 'right' }}>Total Amount</td>
-            <td className='comp_td'>₹{totalAmountAfterDiscount}</td>
-          </tr>
-        </tfoot>
-      </table>
+          </thead>
+          <tbody>
+            {renderProductRows()}
+          </tbody>
+          <tfoot>
+            <tr className='comp_tr'>
+              <td className='comp_td' colSpan="5" style={{ textAlign: 'right' }}>Saved Amount:</td>
+              <td className='comp_td'>₹{totalDiscountAmount}</td>
+            </tr>
+            <tr className='comp_tr'>
+              <td className='comp_td' colSpan="5" style={{ textAlign: 'right' }}>Total Amount</td>
+              <td className='comp_td'>₹{totalAmountAfterDiscount}</td>
+            </tr>
+          </tfoot>
+        </table>
       </div>
 
       {/* Form to capture user details */}
-      <div className='form-sec-cont'>
-      <div className="form-section">
-        <h3>FILL THE DETAILS</h3>
-        <input className="product-input"
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={formDetails.name}
-          onChange={handleInputChange}
-          required
-        />
-        <input className="product-input"
-          type="text"
-          name="city"
-          placeholder="City"
-          value={formDetails.city}
-          onChange={handleInputChange}
-          required
-        />
-        <input className="product-input"
-          type="text"
-          name="state"
-          placeholder="State"
-          value={formDetails.state}
-          onChange={handleInputChange}
-          required
-        />
-        <input className="product-input"
-          type="text"
-          name="address"
-          placeholder="Address (optional)"
-          value={formDetails.address}
-          onChange={handleInputChange}
-        />
-        <input className="product-input"
-          type="tel"
-          name="phoneNumber"
-          placeholder="Phone Number"
-          value={formDetails.phoneNumber}
-          onChange={handleInputChange}
-          required
-        />
-        <input className="product-input"
-          type="email"
-          name="email"
-          placeholder="Email "
-          value={formDetails.email}
-          onChange={handleInputChange}
-          required
-        />
+      {/* Form to capture user details */}
+<div className='form-container'>
+  <div className="form-section">
+    <h3 className="form-title">ORDER DETAILS</h3>
+    {validationErrors && <p className="error-message">{validationErrors}</p>}
+    
+    <div className="form-group">
+      <label className="form-label">Full Name</label>
+      <input className="form-input"
+        type="text"
+        name="name"
+        placeholder="Enter your name"
+        value={formDetails.name}
+        onChange={handleInputChange}
+        disabled={!isAnyProductSelected}
+        required
+      />
+    </div>
 
-        <button type="button" className="product-submit" onClick={handleSubmit}>
-          Place Order
-        </button>
-      </div>
-      </div>
+    <div className="form-group">
+      <label className="form-label">City</label>
+      <input className="form-input"
+        type="text"
+        name="city"
+        placeholder="Enter your city"
+        value={formDetails.city}
+        onChange={handleInputChange}
+        disabled={!isAnyProductSelected}
+        required
+      />
+    </div>
+
+    <div className="form-group">
+      <label className="form-label">State</label>
+      <input className="form-input"
+        type="text"
+        name="state"
+        placeholder="Enter your state"
+        value={formDetails.state}
+        onChange={handleInputChange}
+        disabled={!isAnyProductSelected}
+        required
+      />
+    </div>
+
+    <div className="form-group">
+      <label className="form-label">Address</label>
+      <input className="form-input"
+        type="text"
+        name="address"
+        placeholder="Enter your address (optional)"
+        value={formDetails.address}
+        onChange={handleInputChange}
+        disabled={!isAnyProductSelected}
+      />
+    </div>
+
+    <div className="form-group">
+      <label className="form-label">Phone Number</label>
+      <input className="form-input"
+        type="tel"
+        name="phoneNumber"
+        placeholder="Enter your phone number"
+        value={formDetails.phoneNumber}
+        onChange={handleInputChange}
+        disabled={!isAnyProductSelected}
+        required
+      />
+    </div>
+
+    <div className="form-group">
+      <label className="form-label">Email</label>
+      <input className="form-input"
+        type="email"
+        name="email"
+        placeholder="Enter your email"
+        value={formDetails.email}
+        onChange={handleInputChange}
+        disabled={!isAnyProductSelected}
+        required
+      />
+    </div>
+
+    <button type="button" className="form-submit-btn" onClick={handleSubmit}>
+      Place Order
+    </button>
+  </div>
+</div>
+
     </div>
   );
 };
