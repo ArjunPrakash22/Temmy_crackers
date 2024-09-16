@@ -42,9 +42,9 @@ const Navbar = () => {
             <li className='nav-li'>
               <Link className='nav-a' to='/contact'>Contact</Link>
             </li>
-            <li className='nav-li'>
+            {/* <li className='nav-li'>
               <Link className='nav-a' to="/login">Login</Link>
-            </li>
+            </li> */}
           </ul>
           <button className='nav-btn' onClick={toggleMobileMenu}>
             {isOpen ? <FaTimes /> : <FaBars />}
