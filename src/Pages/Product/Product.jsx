@@ -132,29 +132,23 @@ const Product = () => {
       })
       .join('\n');
     
-    const body = `
-    TEMMY CRACKERS 
+      const body = `TEMMY CRACKERS
 
-    Order ID: ${id}
-    Name: ${name}
-    City: ${city}
-    State: ${state}
-    Address: ${address}
-    Phone Number: ${phoneNumber}
-    
-    Ordered Products:
-    
-    --------------------------------------------------------------------------
-    | Product Name                 | Quantity | Total Price                 |
-    --------------------------------------------------------------------------
-    ${productList}
-    --------------------------------------------------------------------------
-    
-    Amount Saved: ₹${totalDiscountAmount}
-    Total Amount: ₹${totalAmountAfterDiscount.toFixed(2)} 
-    
-    
-    `;
+      Order ID: ${id}
+      Name: ${name}
+      City: ${city}
+      State: ${state}
+      Address: ${address}
+      Phone Number: ${phoneNumber}
+      
+      Ordered Products:
+      
+      - Product Name: ${products.filter(product => product.quantity !== 0)[0].name} (Quantity: ${products.filter(product => product.quantity !== 0)[0].quantity}, Price: ₹${calculateTotal(products.filter(product => product.quantity !== 0)[0])})
+      ${products.filter(product => product.quantity !== 0).slice(1).map(product => `- Product Name: ${product.name} (Quantity: ${product.quantity}, Price: ₹${calculateTotal(product)})`).join('\n')}
+      
+      Amount Saved: ₹${totalDiscountAmount}
+      Total Amount: ₹${totalAmountAfterDiscount}
+      `;
     const mailtoLink = `mailto:Rathan.industries.svks@gmail.com?subject=${encodeURIComponent(
       subject
     )}&body=${encodeURIComponent(body)}`;
@@ -194,6 +188,10 @@ const Product = () => {
 
       // Encode the HTML body
       window.location.href = mailtoLink;
+
+      alert(`Thanks for purchasing from Temmy Crackers Shop! We will reach you through your email or mobile number for further updates.`);
+
+      
       // Optionally refresh the page
       setTimeout(() => {
         window.location.reload();
@@ -308,7 +306,7 @@ const Product = () => {
           )}
 
           <div className="form-group">
-            <label className="form-label">Full Name</label>
+            <label className="form-label">Full Name *</label>
             <input
               className="form-input"
               type="text"
@@ -322,7 +320,7 @@ const Product = () => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">City</label>
+            <label className="form-label">City *</label>
             <input
               className="form-input"
               type="text"
@@ -336,7 +334,7 @@ const Product = () => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">State</label>
+            <label className="form-label">State *</label>
             <input
               className="form-input"
               type="text"
@@ -363,7 +361,7 @@ const Product = () => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Phone Number</label>
+            <label className="form-label">Phone Number *</label>
             <input
               className="form-input"
               type="tel"
@@ -377,7 +375,7 @@ const Product = () => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Email</label>
+            <label className="form-label">Email *</label>
             <input
               className="form-input"
               type="email"
